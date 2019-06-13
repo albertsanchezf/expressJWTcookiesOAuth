@@ -29,6 +29,7 @@ router.post('/login', passport.authenticate('local', { session: false, failureRe
     }
 );
 
+/*------GitHub------*/  
 router.get('/login/github',
     passport.authenticate('github', { session: false })
 );
@@ -40,6 +41,21 @@ router.get('/auth/github/callback', passport.authenticate('github', { session: f
         res.send('<p>Login succeeded. Please proceed to the <a href="/">intranet</a></p>');
     }
 );
+/*------------------*/  
+
+/*-----Facebook-----*/  
+router.get('/login/facebook',
+    passport.authenticate('facebook', {session: false})
+);
+
+router.get('/auth/facebook/callback', passport.authenticate('facebook', { session: false, failureRedirect: '/login' }),
+    function (req, res) {
+        _setJWTCookie(req.user, res);
+        /** And finally redirect to the intranet */
+        res.send('<p>Login succeeded. Please proceed to the <a href="/">intranet</a></p>');
+    }
+);
+/*------------------*/  
 
 function _setJWTCookie(user, res) {
     /** This is what ends up in our JWT */

@@ -4,6 +4,7 @@ const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy;
 const JwtStrategy = require('passport-jwt').Strategy;
 const GitHubStrategy = require('passport-github').Strategy;
+const FacebookStrategy = require('passport-facebook').Strategy;
 const bcrypt = require('bcrypt');
 
 const users = require('./users');
@@ -58,6 +59,16 @@ passport.use('github', new GitHubStrategy(require('./IdP/github'),
         }
         return cb(null, user);
     }
+));
+
+passport.use('facebook', new FacebookStrategy(require('./IdP/facebook'),
+    function(accessToken, refreshToken, profile, cb) {
+        let user = users.findByUsername(profile.username);
+        if (!user) {
+            user = users.createUserFromFacebook(profile);
+        }
+        return cb(null, user);
+  }
 ));
 
 module.exports = passport;
